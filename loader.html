@@ -11,28 +11,26 @@
 <body>
   <div class="loader"></div>
   <script>
-    // URL BASE DO SEU APPS SCRIPT WEB APP
+    // URL BASE DO SEU APPS SCRIPT WEB APP (SEM PARÂMETROS)
     const APPS_SCRIPT_WEB_APP_URL_BASE = "https://script.google.com/macros/s/AKfycbz_ViFleYP5e4-u_VkQG6SV_fagkNPXo96HYJ2Bjc9LjqaDQl7s8iY0RFSC3i5f5k1qtQ/exec"; // <-- COLOQUE AQUI A URL DO SEU DEPLOY DO APPS SCRIPT
 
-    // Obtém o hash (âncora) da URL da página principal do loader
-    const currentHash = window.location.hash; // Ex: "#ID_DA_OFERTA"
+    const currentHash = window.location.hash;
+    const productIdFromHash = currentHash ? currentHash.substring(1) : null;
 
     console.log("Loader: Hash capturado da URL do loader:", currentHash);
+    console.log("Loader: ID do produto do hash:", productIdFromHash);
 
-    let finalAppsScriptUrl = APPS_SCRIPT_WEB_APP_URL_BASE;
-
-    // --- MUDANÇA CRUCIAL AQUI ---
-    if (currentHash) {
-        const productIdFromHash = currentHash.substring(1); // Remove o '#'
-        // Adiciona o ID como um parâmetro de consulta (?id=)
-        finalAppsScriptUrl += "?id=" + encodeURIComponent(productIdFromHash);
+    if (productIdFromHash) {
+        // Salva o ID no localStorage para o Apps Script ler
+        localStorage.setItem('scrollProductId', productIdFromHash);
+        console.log("Loader: ID salvo no localStorage:", productIdFromHash);
+    } else {
+        localStorage.removeItem('scrollProductId'); // Limpa se não houver hash
     }
-    // ----------------------------
 
-    console.log("Loader: URL final do Apps Script com PARÂMETRO para redirecionar:", finalAppsScriptUrl);
-
-    // Mantenha window.location.href, pois ele é mais direto para redirecionamentos
-    window.location.href = finalAppsScriptUrl;
+    // Redireciona para a URL base do Apps Script (sem parâmetros, eles seriam limpos de qualquer forma)
+    window.location.href = APPS_SCRIPT_WEB_APP_URL_BASE;
+    console.log("Loader: Redirecionando para a URL base do Apps Script:", APPS_SCRIPT_WEB_APP_URL_BASE);
   </script>
 </body>
 </html>
