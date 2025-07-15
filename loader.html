@@ -12,30 +12,27 @@
   <div class="loader"></div>
   <script>
     // URL BASE DO SEU APPS SCRIPT WEB APP
-    const APPS_SCRIPT_WEB_APP_URL_BASE = "https://script.google.com/macros/s/AKfycbz_ViFleYP5e4-u_VkQG6SV_fagkNPXo96HYJ2Bjc9LjqaDQl7s8iY0RFSC3i5f5k1qtQ/exec"; // <-- COLOQUE AQUI A URL DO SEEU DEPLOY DO APPS SCRIPT
+    const APPS_SCRIPT_WEB_APP_URL_BASE = "https://script.google.com/macros/s/AKfycbz_ViFleYP5e4-u_VkQG6SV_fagkNPXo96HYJ2Bjc9LjqaDQl7s8iY0RFSC3i5f5k1qtQ/exec"; // <-- COLOQUE AQUI A URL DO SEU DEPLOY DO APPS SCRIPT
 
     // Obtém o hash (âncora) da URL da página principal do loader
     const currentHash = window.location.hash; // Ex: "#ID_DA_OFERTA"
 
-    // --- ADICIONADO PARA DEPURAR NO LOADER.HTML ---
     console.log("Loader: Hash capturado da URL do loader:", currentHash);
-    // ---------------------------------------------
 
-    // Constrói a URL final para o Apps Script, repassando o hash
-    const finalAppsScriptUrl = APPS_SCRIPT_WEB_APP_URL_BASE + currentHash;
+    let finalAppsScriptUrl = APPS_SCRIPT_WEB_APP_URL_BASE;
 
-    // --- ADICIONADO PARA DEPURAR NO LOADER.HTML ---
-    console.log("Loader: URL final do Apps Script com hash para redirecionar:", finalAppsScriptUrl);
-    // ---------------------------------------------
+    // --- MUDANÇA CRUCIAL AQUI ---
+    if (currentHash) {
+        const productIdFromHash = currentHash.substring(1); // Remove o '#'
+        // Adiciona o ID como um parâmetro de consulta (?id=)
+        finalAppsScriptUrl += "?id=" + encodeURIComponent(productIdFromHash);
+    }
+    // ----------------------------
 
-    // Redireciona o navegador para a URL do Apps Script com o hash
-    // Isso fará com que o Apps Script seja carregado com o hash na URL do seu iframe
-    window.location.replace(finalAppsScriptUrl);
+    console.log("Loader: URL final do Apps Script com PARÂMETRO para redirecionar:", finalAppsScriptUrl);
 
-    // OU, se você preferir incorporar em um iframe dentro deste loader (menos recomendado para Google Sites)
-    /*
-    document.body.innerHTML = `<iframe src="${finalAppsScriptUrl}" style="width:100%; height:100vh; border:none;"></iframe>`;
-    */
+    // Mantenha window.location.href, pois ele é mais direto para redirecionamentos
+    window.location.href = finalAppsScriptUrl;
   </script>
 </body>
 </html>
